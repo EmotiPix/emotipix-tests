@@ -1,9 +1,8 @@
-import json
 import unittest
 import requests
 
-class ProdIntegrationTest(unittest.TestCase):
 
+class ProdIntegrationTest(unittest.TestCase):
     def setUp(self):
         self.prod_api_gateway_url = "https://crmudc6r57.execute-api.us-east-2.amazonaws.com/prod"
         self.prod_emotion_api_gateway_url = self.prod_api_gateway_url + "/emotion"
@@ -21,13 +20,16 @@ class ProdIntegrationTest(unittest.TestCase):
 
         response = requests.post(self.prod_process_api_gateway_url, json=self.process_json(emotion, base64))
         self.assertEqual(200, response.status_code)
-        self.assertNotEqual(base64, response.text)
+        response_base64 = response.text
+        self.assertTrue(response_base64)  # assertNotEmpty
+        self.assertNotEqual(base64, response_base64)
 
     def emotion_json(self, base64):
         return {'image': 'data:image/jpeg;base64,' + base64}
 
     def process_json(self, emotion, base64):
         return {'emotion': emotion.upper(), 'image': 'data:image/jpeg;base64,' + base64}
+
 
 if __name__ == '__main__':
     unittest.main()
